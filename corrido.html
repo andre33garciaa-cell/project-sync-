@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Você | Dark Romance</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Configurações Gerais */
+        :root {
+            --neon-pink: #ff94c2;
+            --dark-bg: #0a0a0a;
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Canvas de Partículas */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Fundo preto para o céu estrelado */
+            background-color: #000000; 
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 148, 194, 0.1);
+        }
+
+        /* Tipografia */
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .typewriter-cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: var(--neon-pink);
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Animações de Transição */
+        .page-transition {
+            transition: opacity 1s ease-in-out, transform 1s ease;
+            position: absolute;
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            z-index: 10;
+        }
+
+        .page-active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        /* Player de Música */
+        .vinyl-spin {
+            animation: spin 6s linear infinite;
+        }
+        
+        .vinyl-paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Botões */
+        .btn-glow {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 148, 194, 0.2);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 25px rgba(255, 148, 194, 0.6);
+            transform: scale(1.05);
+            background-color: rgba(255, 148, 194, 0.1);
+            border-color: var(--neon-pink);
+        }
+
+        .btn-runaway {
+            position: relative; 
+            transition: all 0.2s ease;
+        }
+
+        /* Utilitários de Texto */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hello Kitty Image Styling */
+        .hk-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 148, 194, 0.4)) grayscale(40%);
+        }
+    </style>
+</head>
+<body class="selection:bg-pink-900 selection:text-white">
+
+    <!-- Fundo de Partículas (Estrelas e Cometas) -->
+    <canvas id="particles"></canvas>
+
+    <!-- Player de Música Fixo -->
+    <div class="fixed top-6 left-6 z-50 flex items-center gap-3 glass-card p-2 rounded-full pr-5 cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleMusic()">
+        <div class="relative w-10 h-10 rounded-full overflow-hidden border border-gray-600">
+            <!-- Capa do Álbum (Placeholder - Chase Atlantic Vibe) -->
+            <img src="https://i.scdn.co/image/ab67616d0000b273752945d4a84e2424458bc25b" alt="Album Art" id="vinyl" class="w-full h-full object-cover vinyl-spin vinyl-paused opacity-80">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-2 h-2 bg-black rounded-full z-10"></div>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-[10px] uppercase tracking-widest text-gray-400">Now Playing</span>
+            <span class="text-xs font-bold text-pink-200 tracking-wide">Friends - Chase Atlantic</span>
+        </div>
+        <div id="play-icon" class="ml-2 text-pink-300 text-xs">
+            <i class="fas fa-play"></i>
+        </div>
+        <!-- Elemento de áudio - ATENÇÃO: Lembre de mudar o src para o nome do seu arquivo de música! -->
+        <audio id="bg-music" loop>
+            <source src="friends.mp3" type="audio/mp3">>
+        </audio>
+    </div>
+
+    <!-- Container Principal -->
+    <main class="relative w-full max-w-lg px-6 h-screen flex flex-col items-center justify-center z-20">
+
+        <!-- PÁGINA 1: Intro -->
+        <section id="page-1" class="page-transition page-active flex flex-col items-center text-center">
+            <!-- Hello Kitty Dark -->
+            <div class="mb-8 relative">
+                <div class="absolute inset-0 bg-pink-500 blur-[40px] opacity-20 rounded-full"></div>
+                <!-- Imagem Hello Kitty (Placeholder Transparente) -->
+                <img src="https://upload.wikimedia.org/wikipedia/en/0/05/Hello_kitty_character_portrait.png" alt="Hello Kitty" class="w-32 h-32 object-contain hk-glow relative z-10 animate-pulse-slow">
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl w-full min-h-[250px] flex flex-col justify-center">
+                <p id="text-1" class="text-lg leading-relaxed font-light text-gray-200 tracking-wide typewriter-cursor min-h-[120px]"></p>
+            </div>
+
+            <button onclick="nextPage(2)" class="mt-8 px-8 py-3 rounded-full border border-gray-600 text-sm uppercase tracking-[0.2em] text-pink-100 btn-glow bg-black/40 backdrop-blur-md group">
+                Próximo <i class="fas fa-chevron-right ml-2 text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </section>
+
+        <!-- PÁGINA 2: Declaração -->
+        <section id="page-2" class="page-transition flex flex-col items-center text-center">
+            <div class="glass-card p-8 rounded-2xl w-full min-h-[400px] flex flex-col justify-center relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 w-20 h-20 bg-pink-900 blur-[50px] opacity-30"></div>
+                <div class="absolute bottom-0 left-0 w-20 h-20 bg-purple-900 blur-[50px] opacity-30"></div>
+
+                <div id="text-2" class="text-base leading-7 font-light text-gray-300 space-y-4 text-left font-serif">
+                    <!-- O texto será injetado via JS -->
+                </div>
+            </div>
+
+            <button onclick="nextPage(3)" class="mt-8 px-8 py-3 rounded-full border border-gray-600 text-sm uppercase tracking-[0.2em] text-pink-100 btn-glow bg-black/40 backdrop-blur-md group">
+                Continuar <i class="fas fa-heart ml-2 text-[10px] text-pink-400"></i>
+            </button>
+        </section>
+
+        <!-- PÁGINA 3: Final -->
+        <section id="page-3" class="page-transition flex flex-col items-center text-center">
+            <div class="glass-card p-10 rounded-2xl w-full border-pink-900/30 shadow-[0_0_30px_rgba(255,148,194,0.1)]">
+                <h2 class="text-2xl font-serif italic text-pink-200 mb-6 text-glow">Aceita namorar comigo?</h2>
+                
+                <p class="text-gray-300 font-light mb-8 leading-relaxed opacity-0 animate-fade-in" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
+                    Me desculpa por tudo.<br>
+                    Eu te amo muito minha pequena.<br>
+                    <span class="block mt-4 text-lg font-medium text-white tracking-wider">Aceita voltar comigo?</span>
+                </p>
+
+                <div class="flex flex-col gap-4 w-full items-center mt-4">
+                    <button onclick="acceptProposal()" class="w-full py-4 rounded-xl bg-pink-900/20 border border-pink-500/50 text-pink-100 uppercase tracking-widest hover:bg-pink-500/20 transition-all hover:scale-105 shadow-[0_0_15px_rgba(255,148,194,0.3)]">
+                        SIM
+                    </button>
+                    
+                    <button id="btn-no" onmouseover="moveButton(this)" ontouchstart="moveButton(this)" class="btn-runaway px-8 py-3 text-xs text-gray-500 uppercase tracking-widest hover:text-white transition-colors">
+                        NÃO
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tela de Sucesso (Escondida) -->
+        <div id="success-screen" class="fixed inset-0 z-50 bg-black flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-1000">
+            <div class="text-center p-6">
+                <i class="fas fa-heart text-6xl text-pink-500 animate-pulse mb-6 drop-shadow-[0_0_15px_rgba(255,148,194,0.8)]"></i>
+                <h1 class="text-3xl font-serif text-white mb-2">Eu Sabia.</h1>
+                <p class="text-gray-400 tracking-widest uppercase text-sm">Nós somos para sempre.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- CONFIGURAÇÃO DE TEXTOS ---
+        const texts = {
+            page1: "Eu não sei exatamente quando isso começou… mas, de alguma forma, você foi ocupando um espaço em mim que antes estava vazio - E, quando eu percebi, você já fazia parte dos meus pensamentos mais simples… e dos mais importantes também - Como se, sem fazer esforço nenhum, você tivesse se tornado essencial pra mim.",
+            page2: [
+                "Eu não esperava nada disso.",
+                "E, quando eu menos imaginava, você apareceu na minha vida…",
+                "Aos poucos, foi me conquistando, me fazendo sorrir de um jeito leve, sem esforço.",
+                "Quando eu percebi, já estava esperando o seu “bom dia”,",
+                "querendo ouvir a sua voz,",
+                "e guardando cada detalhe seu comigo.",
+                "Eu amo o seu sorriso,",
+                "a forma única que você tem de ser você.",
+                "Antes, você era só uma galáxia pra mim…",
+                "algo bonito, distante.",
+                "Mas hoje, você se tornou um universo inteiro."
+            ]
+        };
+
+        // --- LÓGICA DE NAVEGAÇÃO E TYPEWRITER ---
+        let currentPage = 1;
+        let isTyping = false;
+
+        // Iniciar página 1
+        window.onload = () => {
+            initParticles();
+            // Velocidade mais rápida (30ms)
+            typeWriter('text-1', texts.page1, 25); 
+        };
+
+        function nextPage(pageNumber) {
+            if (isTyping) return; // Impede troca se estiver digitando
+
+            // Fade out atual
+            const currentEl = document.getElementById(`page-${currentPage}`);
+            currentEl.classList.remove('page-active');
+            
+            setTimeout(() => {
+                currentEl.style.display = 'none'; // Remove do fluxo
+                
+                // Setup próxima página
+                currentPage = pageNumber;
+                const nextEl = document.getElementById(`page-${currentPage}`);
+                nextEl.style.display = 'flex';
+                
+                // Pequeno delay para permitir o display flex aplicar antes da opacidade
+                setTimeout(() => {
+                    nextEl.classList.add('page-active');
+                    
+                    if (pageNumber === 2) {
+                        // Usando nova função para digitar parágrafo por parágrafo (20ms)
+                        typeWriterSequential('text-2', texts.page2, 20); 
+                    }
+                }, 50);
+
+            }, 800); // Tempo da transição CSS
+        }
+
+        // Typewriter para string única (Página 1)
+        function typeWriter(elementId, text, speed) {
+            isTyping = true;
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    isTyping = false;
+                    element.classList.remove('typewriter-cursor');
+                }
+            }
+            type();
+        }
+
+        // NOVO: Typewriter sequencial para array de parágrafos (Página 2)
+        function typeWriterSequential(elementId, textArray, speed) {
+            isTyping = true;
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            let lineIndex = 0;
+            
+            function typeNextLine() {
+                if (lineIndex < textArray.length) {
+                    const line = textArray[lineIndex];
+                    const p = document.createElement('p');
+                    p.className = "mb-3 text-white transition-opacity duration-700";
+                    element.appendChild(p);
+                    
+                    let charIndex = 0;
+
+                    function typeChar() {
+                        if (charIndex < line.length) {
+                            p.innerHTML += line.charAt(charIndex);
+                            charIndex++;
+                            // Digita o caractere com a velocidade definida
+                            setTimeout(typeChar, speed); 
+                        } else {
+                            // Linha terminada, espera um pouco e vai para a próxima
+                            lineIndex++;
+                            setTimeout(typeNextLine, 1000); // Pausa de 1 segundo entre parágrafos
+                        }
+                    }
+                    typeChar();
+                } else {
+                    isTyping = false;
+                }
+            }
+            typeNextLine();
+        }
+
+        // --- BOTÃO FUJÃO ---
+        function moveButton(btn) {
+              const maxX = 120; // distância horizontal
+              const maxY = 60;  // distância vertical
+
+             const x = (Math.random() - 0.5) * maxX;
+             const y = (Math.random() - 0.5) * maxY;
+
+             btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        // --- ACEITAR PROPOSTA ---
+        async function acceptProposal() {
+            const successScreen = document.getElementById('success-screen');
+            successScreen.style.pointerEvents = 'all';
+            successScreen.style.opacity = '1';
+            
+            // Tocar música se não estiver tocando
+            const audio = document.getElementById('bg-music');
+            const vinyl = document.getElementById('vinyl');
+            const icon = document.getElementById('play-icon');
+            
+            if (audio.paused) {
+                try {
+                    await audio.play();
+                    vinyl.classList.remove('vinyl-paused');
+                    icon.innerHTML = '<i class="fas fa-pause"></i>';
+                } catch (err) {
+                    console.log("Auto-play prevented (browser policy) or interrupted:", err);
+                }
+            }
+
+            // Criar explosão de partículas
+            createExplosion();
+        }
+
+        // --- PLAYER DE MÚSICA (CORRIGIDO PARA ABORTERROR) ---
+        let isTogglingMusic = false;
+
+        async function toggleMusic() {
+            // Evita cliques rápidos que causam AbortError
+            if (isTogglingMusic) return;
+            isTogglingMusic = true;
+
+            const audio = document.getElementById('bg-music');
+            const vinyl = document.getElementById('vinyl');
+            const icon = document.getElementById('play-icon');
+
+            try {
+                if (audio.paused) {
+                    await audio.play();
+                    vinyl.classList.remove('vinyl-paused');
+                    icon.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    audio.pause();
+                    vinyl.classList.add('vinyl-paused');
+                    icon.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            } catch (err) {
+                console.error("Erro no player:", err);
+                // Reseta estado visual em caso de erro
+                vinyl.classList.add('vinyl-paused');
+                icon.innerHTML = '<i class="fas fa-play"></i>';
+            } finally {
+                isTogglingMusic = false;
+            }
+        }
+
+        // --- SISTEMA DE PARTÍCULAS (CANVAS - ESTRELAS E COMETAS) ---
+        function initParticles() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particlesArray = [];
+            const numberOfParticles = 80;
+            const numberOfComets = 3; // Número de cometas
+
+            window.addEventListener('resize', function(){
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+
+            // Classe para estrelas normais (mais lentas e estáticas)
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2;
+                    this.speedX = (Math.random() * 0.2) - 0.1; 
+                    this.speedY = (Math.random() * 0.2) - 0.1;
+                    this.opacity = Math.random() * 0.5;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.size > 0.2) this.size -= 0.005; 
+                    if (this.size <= 0.2) this.size = Math.random() * 2;
+
+                    // Resetar se sair da tela
+                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                    }
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(255, 148, 194, ${this.opacity})`; // Rosa suave
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Classe para Cometas (estrelas cadentes)
+            class Comet extends Particle {
+                constructor() {
+                    super();
+                    this.size = Math.random() * 2 + 1; // Levemente maiores
+                    // Começa fora da tela (canto superior esquerdo ou superior)
+                    this.x = Math.random() * canvas.width * 0.5 - 100;
+                    this.y = Math.random() * canvas.height * 0.1 - 100; 
+                    this.speedX = Math.random() * 5 + 3; // Movimento rápido para baixo/direita
+                    this.speedY = Math.random() * 3 + 1;
+                    this.life = 100; 
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life--;
+
+                    // Resetar quando sair da tela
+                    if (this.x > canvas.width + 100 || this.y > canvas.height + 100 || this.life <= 0) {
+                        this.life = 100;
+                        this.x = Math.random() * canvas.width * 0.5 - 100; 
+                        this.y = Math.random() * canvas.height * 0.1 - 100;
+                        this.size = Math.random() * 2 + 1;
+                        this.speedX = Math.random() * 5 + 3;
+                        this.speedY = Math.random() * 3 + 1;
+                    }
+                }
+
+                draw() {
+                    // Desenha o corpo do cometa (cabeça)
+                    ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Desenha a cauda
+                    ctx.globalAlpha = 0.2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    // Ponto final da cauda na direção oposta ao movimento
+                    ctx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5); 
+                    ctx.strokeStyle = 'rgba(255, 148, 194, 0.5)';
+                    ctx.lineWidth = this.size;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1; // Reset
+                }
+            }
+
+
+            function init() {
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particlesArray.push(new Particle());
+                }
+                // Adiciona os cometas no array de partículas
+                for (let i = 0; i < numberOfComets; i++) { 
+                    particlesArray.push(new Comet());
+                }
+            }
+
+            function animate() {
+                // Efeito de rastro: preenche com uma cor levemente transparente
+                // para criar um efeito de estrela cintilante e rastro dos cometas.
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height); 
+
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                    particlesArray[i].draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            init();
+            animate();
+        }
+
+        // Efeito extra para o Sim
+        function createExplosion() {
+            // Apenas um placeholder visual para lógica de confete se desejado
+        }
+
+    </script>
+</body>
+</html>
