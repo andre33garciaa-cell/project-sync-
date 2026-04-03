@@ -197,12 +197,12 @@
         <!-- PÁGINA 3: Final -->
         <section id="page-3" class="page-transition flex flex-col items-center text-center">
             <div class="glass-card p-10 rounded-2xl w-full border-pink-900/30 shadow-[0_0_30px_rgba(255,148,194,0.1)]">
-                <h2 class="text-2xl font-serif italic text-pink-200 mb-6 text-glow">Aceita namorar comigo?</h2>
+                <h2 class="text-2xl font-serif italic text-pink-200 mb-6 text-glow">Me desculpao?</h2>
                 
                 <p class="text-gray-300 font-light mb-8 leading-relaxed opacity-0 animate-fade-in" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
                     Me desculpa por tudo.<br>
                     Eu te amo muito minha pequena.<br>
-                    <span class="block mt-4 text-lg font-medium text-white tracking-wider">Aceita voltar comigo?</span>
+                    <span class="block mt-4 text-lg font-medium text-white tracking-wider">Me desculpa?</span>
                 </p>
 
                 <div class="flex flex-col gap-4 w-full items-center mt-4">
@@ -231,19 +231,19 @@
     <script>
         // --- CONFIGURAÇÃO DE TEXTOS ---
         const texts = {
-            page1: "Queria te pedir desculpa de coração pelo jeito que falei contigo, principalmente por ter te xingado. Você não merecia isso---- Mas também queria te explicar que aquilo me deixou chateado… eu não estava dando em cima de você, nem mentindo ou falando de você pra ninguém. Eu só estava sendo educado e gostei de conversar contigo.",
+            page1: "Queria te pedir desculpa de coração pelo jeito que falei contigo, principalmente por ter te xingado. Você não merecia isso, deveria ter ouvido mais e ter explicado com mais paciencia meu ponto ----Q… , . Eu só estava sendo educado e gostei de conversar contigo.",
             page2: [
-                "Eu não esperava nada disso.",
-                "E, quando eu menos imaginava, você apareceu na minha vida…",
-                "Aos poucos, foi me conquistando, me fazendo sorrir de um jeito leve, sem esforço.",
-                "Quando eu percebi, já estava esperando o seu “bom dia”,",
-                "querendo ouvir a sua voz,",
-                "e guardando cada detalhe seu comigo.",
-                "Eu amo o seu sorriso,",
-                "a forma única que você tem de ser você.",
-                "Antes, você era só uma galáxia pra mim…",
-                "algo bonito, distante.",
-                "Mas hoje, você se tornou um universo inteiro."
+                "Quando você insistiu nisso, eu me senti mal,",
+                "como se não estivesse sendo ouvido.",
+                "Mesmo assim, reconheço que errei na forma que reagi",
+                "Somos parecidos, e dificil achar alguém com os mesmos gosto aqui na casa”,",
+                "So não quero subir na morada com esse clima",
+                "ja que você ameaçou de me arranhar..o leão ai.",
+                "ueria te explicar que aquilo me deixou chateado,",
+                "eu não estava dando em cima de você--nem mentindo ou falando de você pra ninguém.",
+                "Obvio que alguém ficaria contigo, você e incrivelmente linda Natasha",
+                "Mas eu levo relacionamento a serio, e não sou assim.",
+                "Não, sabia como pedir desculpas e fiz isso.. ."
             ]
         };
 
